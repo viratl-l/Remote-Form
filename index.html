@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Remote Install Form</title>
+
+<style>
+body{
+font-family: Arial;
+background:#f4f6f8;
+padding:30px;
+}
+
+.container{
+background:white;
+padding:30px;
+border-radius:10px;
+max-width:900px;
+margin:auto;
+}
+
+h2{
+background:#2c3e50;
+color:white;
+padding:10px;
+border-radius:5px;
+}
+
+label{
+font-weight:bold;
+}
+
+input, textarea{
+width:100%;
+padding:8px;
+margin:5px 0 15px 0;
+}
+
+button{
+padding:10px 20px;
+font-size:16px;
+background:#27ae60;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+margin:5px;
+}
+</style>
+
+<script>
+
+function cleanName(text){
+return text.replace(/[\\/:*?"<>| ]/g,"_")
+}
+
+function getFileName(){
+
+var bu = cleanName(document.getElementById("bu").value)
+var branch = cleanName(document.getElementById("branch").value)
+var com = cleanName(document.getElementById("comnew").value)
+
+return bu + "-" + branch + "-" + com
+}
+
+function getData(){
+
+return `
+ส่ง Remote เครื่องใหม่   BU ${bu.value} / สาขา ${branch.value}
+PORIS : ${poris.value}
+POBU : ${pobu.value}
+Comname เครื่องใหม่ : ${comnew.value}
+S/N เครื่องใหม่ : ${snnew.value}
+RIS Tag cpu  : ${ristagcpu.value}
+S/N จอใหม่  : ${snmonitornew.value}
+RIS Tag จอ  : ${ristagmonitor.value}
+IP : ${ip.value}
+เลข Anydesk : ${anydesk.value}
+เครื่องใหม่ VA : ${avnew.value}
+Winver : ${winvernew.value}
+
+-----------------
+ข้อมูลเครื่องเก่า
+Comname เครื่องเก่า : ${comold.value}
+S/N เครื่องเก่า : ${snold.value}
+RIS Tag : ${ristagold.value}
+S/N จอเก่า : ${snmonitorold.value}
+RIS Tag : ${ristagmonitorold.value}
+เครื่องเก่าใช้ AV : ${avold.value}
+Winver : ${winverold.value}
+
+โปรแกรมใช้งาน :
+${program.value}
+
+---------------------
+ข้อมูล User
+ชื่อ -นามสกุล : ${name.value}
+รหัสพนักงาน  : ${empid.value}
+เบอร์ติดต่อ  : ${phone.value}
+แผนก : ${dept.value}
+Email : ${email.value}
+เจ้าหน้าที่ speed ติดตั้งที่หน้างาน  : ${tech.value} / ${techphone.value}
+
+รบกวนเช็ค GLPI,Kace, และรบกวน ADD HMS ให้ทางทีมด้วยนะครับ
+`
+}
+
+function saveTXT(){
+
+var filename = getFileName() + ".txt"
+
+var blob = new Blob([getData()],{type:"text/plain"})
+
+var a=document.createElement("a")
+a.href=URL.createObjectURL(blob)
+a.download=filename
+a.click()
+
+}
+
+function saveHTML(){
+
+var filename = getFileName() + ".html"
+
+var content = "<html><meta charset='utf-8'><body><pre>"+getData()+"</pre></body></html>"
+
+var blob = new Blob([content],{type:"text/html"})
+
+var a=document.createElement("a")
+a.href=URL.createObjectURL(blob)
+a.download=filename
+a.click()
+
+}
+function sendDirectToLine() {
+  // 1. ดึงข้อมูลทั้งหมดจากฟอร์ม ผ่านฟังก์ชัน getData() ที่คุณมีอยู่แล้ว
+  var message = getData();
+
+  // 2. แปลงข้อความ (พวกช่องว่าง ภาษาไทย การขึ้นบรรทัดใหม่) ให้อยู่ในรูปแบบที่ URL ของเบราว์เซอร์อ่านเข้าใจ
+  var encodedMessage = encodeURIComponent(message);
+
+  // 3. สร้าง URL สำหรับสั่งงานแอป LINE (LINE URL Scheme)
+  var lineUrl = "https://line.me/R/msg/text/?" + encodedMessage;
+
+  // 4. สั่งให้เปิดลิงก์นี้ ซึ่งถ้าเปิดบนมือถือ มันจะสลับไปเปิดแอป LINE ทันที
+  window.open(lineUrl, '_blank');
+}
+</script>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>ส่ง Remote เครื่องใหม่</h2>
+
+<label>BU</label>
+<input id="bu">
+
+<label>สาขา</label>
+<input id="branch">
+
+<label>PORIS</label>
+<input id="poris">
+
+<label>POBU</label>
+<input id="pobu">
+
+<label>Comname เครื่องใหม่</label>
+<input id="comnew">
+
+<label>S/N เครื่องใหม่</label>
+<input id="snnew">
+
+<label>RIS Tag cpu</label>
+<input id="ristagcpu">
+
+<label>S/N จอใหม่</label>
+<input id="snmonitornew">
+
+<label>RIS Tag จอ</label>
+<input id="ristagmonitor">
+
+<label>IP</label>
+<input id="ip">
+
+<label>เลข Anydesk</label>
+<input id="anydesk">
+
+<label>AV เครื่องใหม่</label>
+<input id="avnew">
+
+<label>Winver</label>
+<input id="winvernew">
+
+<h2>ข้อมูลเครื่องเก่า</h2>
+
+<label>Comname เครื่องเก่า</label>
+<input id="comold">
+
+<label>S/N เครื่องเก่า</label>
+<input id="snold">
+
+<label>RIS Tag</label>
+<input id="ristagold">
+
+<label>S/N จอเก่า</label>
+<input id="snmonitorold">
+
+<label>RIS Tag</label>
+<input id="ristagmonitorold">
+
+<label>เครื่องเก่าใช้ AV</label>
+<input id="avold">
+
+<label>Winver</label>
+<input id="winverold">
+
+<label>โปรแกรมใช้งาน</label>
+<textarea id="program" rows="4"></textarea>
+
+<h2>ข้อมูล User</h2>
+
+<label>ชื่อ - นามสกุล</label>
+<input id="name">
+
+<label>รหัสพนักงาน</label>
+<input id="empid">
+
+<label>เบอร์ติดต่อ</label>
+<input id="phone">
+
+<label>แผนก</label>
+<input id="dept">
+
+<label>Email</label>
+<input id="email">
+
+<label>เจ้าหน้าที่ Speed</label>
+<input id="tech">
+
+<label>เบอร์เจ้าหน้าที่</label>
+<input id="techphone">
+
+<br><br>
+
+<center>
+
+<button onclick="saveTXT()">Save TXT</button>
+<button onclick="saveHTML()">Save HTML</button>
+<button onclick="sendDirectToLine()" style="background:#00B900;">ส่งเข้าแอป LINE</button>
+</center>
+
+</div>
+
+</body>
+</html>
