@@ -1,109 +1,147 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Remote Install Form</title>
 
 <style>
-body{
-font-family: Arial;
-background:#f4f6f8;
-padding:30px;
-}
+    /* ปรับพื้นหลังให้ดูสะอาดตา */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f0f2f5;
+        margin: 0;
+        padding: 15px;
+        color: #333;
+    }
 
-.container{
-background:white;
-padding:30px;
-border-radius:10px;
-max-width:900px;
-margin:auto;
-}
+    .container {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        max-width: 600px; /* จำกัดความกว้างให้พอดีสายตา */
+        margin: auto;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
 
-h2{
-background:#2c3e50;
-color:white;
-padding:10px;
-border-radius:5px;
-}
+    h2 {
+        background: #2c3e50;
+        color: white;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        margin-top: 25px;
+        margin-bottom: 15px;
+    }
 
-label{
-font-weight:bold;
-}
+    h2:first-of-type { margin-top: 0; }
 
-input, textarea{
-width:100%;
-padding:8px;
-margin:5px 0 15px 0;
-}
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+        color: #555;
+    }
 
-button{
-padding:10px 20px;
-font-size:16px;
-background:#27ae60;
-color:white;
-border:none;
-border-radius:5px;
-cursor:pointer;
-margin:5px;
-}
+    input, textarea {
+        width: 100%;
+        padding: 12px; /* ขยายช่องกรอกให้จิ้มง่ายขึ้น */
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-sizing: border-box; /* ป้องกัน Input ล้นจอ */
+        font-size: 16px; /* ป้องกัน iPhone ซูมหน้าจอเวลาพิมพ์ */
+    }
+
+    input:focus, textarea:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 5px rgba(52,152,219,0.3);
+    }
+
+    /* ปรับแต่งส่วนปุ่ม */
+    .button-group {
+        display: flex;
+        flex-direction: column; /* เรียงปุ่มแนวตั้งบนมือถือ */
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    button {
+        width: 100%;
+        padding: 15px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-save { background: #ecf0f1; color: #2c3e50; }
+    .btn-line { background: #00B900; color: white; }
+    
+    button:active { transform: scale(0.98); opacity: 0.9; }
+
+    /* ปรับขนาดจอคอมพิวเตอร์ */
+    @media (min-width: 600px) {
+        .button-group {
+            flex-direction: row; /* จอคอมให้เรียงแนวนอน */
+        }
+    }
 </style>
 
 <script>
+function getData() {
+    // ดึงค่าโดยใช้ ID
+    const getVal = (id) => document.getElementById(id).value;
+    const bu = getVal("bu"), branch = getVal("branch"), comnew = getVal("comnew");
 
-function cleanName(text){
-return text.replace(/[\\/:*?"<>| ]/g,"_")
-}
-
-function getFileName(){
-
-var bu = cleanName(document.getElementById("bu").value)
-var branch = cleanName(document.getElementById("branch").value)
-var com = cleanName(document.getElementById("comnew").value)
-
-return bu + "-" + branch + "-" + com
-}
-
-function getData(){
-
-return `
-ส่ง Remote เครื่องใหม่   BU ${bu.value} / สาขา ${branch.value}
-PORIS : ${poris.value}
-POBU : ${pobu.value}
-Comname เครื่องใหม่ : ${comnew.value}
-S/N เครื่องใหม่ : ${snnew.value}
-RIS Tag cpu  : ${ristagcpu.value}
-S/N จอใหม่  : ${snmonitornew.value}
-RIS Tag จอ  : ${ristagmonitor.value}
-IP : ${ip.value}
-เลข Anydesk : ${anydesk.value}
-เครื่องใหม่ VA : ${avnew.value}
-Winver : ${winvernew.value}
+    return `ส่ง Remote เครื่องใหม่ BU ${bu} / สาขา ${branch}
+PORIS : ${getVal("poris")}
+POBU : ${getVal("pobu")}
+Comname เครื่องใหม่ : ${comnew}
+S/N เครื่องใหม่ : ${getVal("snnew")}
+RIS Tag cpu : ${getVal("ristagcpu")}
+S/N จอใหม่ : ${getVal("snmonitornew")}
+RIS Tag จอ : ${getVal("ristagmonitor")}
+IP : ${getVal("ip")}
+เลข Anydesk : ${getVal("anydesk")}
+เครื่องใหม่ VA : ${getVal("avnew")}
+Winver : ${getVal("winvernew")}
 
 -----------------
 ข้อมูลเครื่องเก่า
-Comname เครื่องเก่า : ${comold.value}
-S/N เครื่องเก่า : ${snold.value}
-RIS Tag : ${ristagold.value}
-S/N จอเก่า : ${snmonitorold.value}
-RIS Tag : ${ristagmonitorold.value}
-เครื่องเก่าใช้ AV : ${avold.value}
-Winver : ${winverold.value}
+Comname เครื่องเก่า : ${getVal("comold")}
+S/N เครื่องเก่า : ${getVal("snold")}
+RIS Tag : ${getVal("ristagold")}
+S/N จอเก่า : ${getVal("snmonitorold")}
+RIS Tag : ${getVal("ristagmonitorold")}
+เครื่องเก่าใช้ AV : ${getVal("avold")}
+Winver : ${getVal("winverold")}
 
 โปรแกรมใช้งาน :
-${program.value}
+${getVal("program")}
 
 ---------------------
 ข้อมูล User
-ชื่อ -นามสกุล : ${name.value}
-รหัสพนักงาน  : ${empid.value}
-เบอร์ติดต่อ  : ${phone.value}
-แผนก : ${dept.value}
-Email : ${email.value}
-เจ้าหน้าที่ speed ติดตั้งที่หน้างาน  : ${tech.value} / ${techphone.value}
+ชื่อ-นามสกุล : ${getVal("name")}
+รหัสพนักงาน : ${getVal("empid")}
+เบอร์ติดต่อ : ${getVal("phone")}
+แผนก : ${getVal("dept")}
+Email : ${getVal("email")}
+เจ้าหน้าที่ speed : ${getVal("tech")} / ${getVal("techphone")}
 
-รบกวนเช็ค GLPI,Kace, และรบกวน ADD HMS ให้ทางทีมด้วยนะครับ
-`
+รบกวนเช็ค GLPI,Kace, และรบกวน ADD HMS ให้ด้วยครับ`;
+}
+
+function cleanName(text) { return text.replace(/[\\/:*?"<>| ]/g, "_"); }
+
+function getFileName() {
+    return cleanName(document.getElementById("bu").value) + "-" + 
+           cleanName(document.getElementById("branch").value) + "-" + 
+           cleanName(document.getElementById("comnew").value);
 }
 
 function saveTXT(){
@@ -133,18 +171,19 @@ a.download=filename
 a.click()
 
 }
-function sendDirectToLine() {
-  // 1. ดึงข้อมูลทั้งหมดจากฟอร์ม ผ่านฟังก์ชัน getData() ที่คุณมีอยู่แล้ว
-  var message = getData();
-
-  // 2. แปลงข้อความ (พวกช่องว่าง ภาษาไทย การขึ้นบรรทัดใหม่) ให้อยู่ในรูปแบบที่ URL ของเบราว์เซอร์อ่านเข้าใจ
-  var encodedMessage = encodeURIComponent(message);
-
-  // 3. สร้าง URL สำหรับสั่งงานแอป LINE (LINE URL Scheme)
-  var lineUrl = "https://line.me/R/msg/text/?" + encodedMessage;
-
-  // 4. สั่งให้เปิดลิงก์นี้ ซึ่งถ้าเปิดบนมือถือ มันจะสลับไปเปิดแอป LINE ทันที
-  window.open(lineUrl, '_blank');
+function sendToLine() {
+    // 1. ดึงข้อมูลจากฟอร์มทั้งหมดมา (ใช้ฟังก์ชัน getData เดิมของคุณ)
+    var message = getData(); 
+    
+    // 2. แปลงข้อความเป็นรูปแบบที่ URL เข้าใจ (เช่น เปลี่ยนช่องว่างเป็น %20)
+    var encodedMessage = encodeURIComponent(message);
+    
+    // 3. สร้าง Link สำหรับเรียกเปิดแอป LINE พร้อมส่งข้อความ
+    // เมื่อกด ลิงก์นี้จะเด้งเข้าแอป LINE และให้เราเลือก "ผู้รับ" เอง
+    var lineUrl = "https://line.me/R/msg/text/?" + encodedMessage;
+    
+    // 4. สั่งเปิดลิงก์
+    window.open(lineUrl, '_blank');
 }
 </script>
 </head>
@@ -152,106 +191,49 @@ function sendDirectToLine() {
 <body>
 
 <div class="container">
+    <h2>ข้อมูลเครื่องใหม่</h2>
+    <label>BU</label><input id="bu">
+    <label>สาขา</label><input id="branch">
+    <label>PORIS</label><input id="poris">
+    <label>POBU</label><input id="pobu">
+    <label>Comname ใหม่</label><input id="comnew">
+    <label>S/N ใหม่</label><input id="snnew">
+    <label>RIS Tag CPU</label><input id="ristagcpu">
+    <label>S/N จอใหม่</label><input id="snmonitornew">
+    <label>RIS Tag จอ</label><input id="ristagmonitor">
+    <label>IP</label><input id="ip">
+    <label>เลข Anydesk</label><input id="anydesk">
+    <label>AV เครื่องใหม่</label><input id="avnew">
+    <label>Winver</label><input id="winvernew">
 
-<h2>ส่ง Remote เครื่องใหม่</h2>
+    <h2>ข้อมูลเครื่องเก่า</h2>
+    <label>Comname เก่า</label><input id="comold">
+    <label>S/N เก่า</label><input id="snold">
+    <label>RIS Tag</label><input id="ristagold">
+    <label>S/N จอเก่า</label><input id="snmonitorold">
+    <label>RIS Tag จอเก่า</label><input id="ristagmonitorold">
+    <label>AV เครื่องเก่า</label><input id="avold">
+    <label>Winver</label><input id="winverold">
+    <label>โปรแกรมใช้งาน</label><textarea id="program" rows="3"></textarea>
 
-<label>BU</label>
-<input id="bu">
+    <h2>ข้อมูล User / หน้างาน</h2>
+    <label>ชื่อ-นามสกุล</label><input id="name">
+    <label>รหัสพนักงาน</label><input id="empid">
+    <label>เบอร์ติดต่อ</label><input id="phone">
+    <label>แผนก</label><input id="dept">
+    <label>Email</label><input id="email">
+    <label>เจ้าหน้าที่ Speed</label><input id="tech">
+    <label>เบอร์เจ้าหน้าที่</label><input id="techphone">
 
-<label>สาขา</label>
-<input id="branch">
+    <div class="button-group">
+        <button onclick="saveHTML()">Save HTML</button>
+		<button class="btn-save" onclick="saveTXT()">Save TXT</button>
+		<button class="btn-line" onclick="sendToLine()">ส่งเข้า LINE</button>
+    </div>
+</div>
 
-<label>PORIS</label>
-<input id="poris">
-
-<label>POBU</label>
-<input id="pobu">
-
-<label>Comname เครื่องใหม่</label>
-<input id="comnew">
-
-<label>S/N เครื่องใหม่</label>
-<input id="snnew">
-
-<label>RIS Tag cpu</label>
-<input id="ristagcpu">
-
-<label>S/N จอใหม่</label>
-<input id="snmonitornew">
-
-<label>RIS Tag จอ</label>
-<input id="ristagmonitor">
-
-<label>IP</label>
-<input id="ip">
-
-<label>เลข Anydesk</label>
-<input id="anydesk">
-
-<label>AV เครื่องใหม่</label>
-<input id="avnew">
-
-<label>Winver</label>
-<input id="winvernew">
-
-<h2>ข้อมูลเครื่องเก่า</h2>
-
-<label>Comname เครื่องเก่า</label>
-<input id="comold">
-
-<label>S/N เครื่องเก่า</label>
-<input id="snold">
-
-<label>RIS Tag</label>
-<input id="ristagold">
-
-<label>S/N จอเก่า</label>
-<input id="snmonitorold">
-
-<label>RIS Tag</label>
-<input id="ristagmonitorold">
-
-<label>เครื่องเก่าใช้ AV</label>
-<input id="avold">
-
-<label>Winver</label>
-<input id="winverold">
-
-<label>โปรแกรมใช้งาน</label>
-<textarea id="program" rows="4"></textarea>
-
-<h2>ข้อมูล User</h2>
-
-<label>ชื่อ - นามสกุล</label>
-<input id="name">
-
-<label>รหัสพนักงาน</label>
-<input id="empid">
-
-<label>เบอร์ติดต่อ</label>
-<input id="phone">
-
-<label>แผนก</label>
-<input id="dept">
-
-<label>Email</label>
-<input id="email">
-
-<label>เจ้าหน้าที่ Speed</label>
-<input id="tech">
-
-<label>เบอร์เจ้าหน้าที่</label>
-<input id="techphone">
-
-<br><br>
-
-<center>
-
-<button onclick="saveTXT()">Save TXT</button>
-<button onclick="saveHTML()">Save HTML</button>
-<button onclick="sendDirectToLine()" style="background:#00B900;">ส่งเข้าแอป LINE</button>
-</center>
-
+<div style="text-align:center; margin-top:20px; color:#888; font-size:12px;">
+    Remote Install Form v2.0 (Mobile Ready)
 </div>
 
 </body>
